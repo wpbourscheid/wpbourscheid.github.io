@@ -508,9 +508,9 @@ var config = {
   escolheObjeto: "cubo1",
   vertice: 0,
   luzIndex: 0,
-  luzx: 5.8,
-  luzy: 4.5,
-  luzz: 8.1,
+  luzx: 0,
+  luzy: 1,
+  luzz: 0,
   shininess: 300.0,
   camera_1: false,
   camera_2: false,
@@ -520,8 +520,8 @@ var config = {
 const checkColision2 = (obj, shot) => {
 
   if (
-    (shot[0] < obj[0] + 2)
-    && (shot[0] + 0.5 > obj[0])
+    (shot[0] < obj[0] + 1.5)
+    && (shot[0] + 0.5 > obj[0]-1.5)
     && (shot[1] < obj[1] + 2)
     && (1 + shot[1] > obj[1])
   ) {
@@ -759,6 +759,10 @@ Node.prototype.updateWorldMatrix = function (matrix) {
   });
 };
 
+
+var hitCounter = 0;
+var gameOver = 0;
+
 function addPyramid() {
   inMemory();
   numberOfObjects++;
@@ -857,7 +861,7 @@ function addInimigo() {
   countEnemy++;
   var novoObjeto = {
     name: `inimigo${countEnemy}`,
-    translation: [countEnemy * 2 + -10, 10, 0],
+    translation: [countEnemy * 2.2 + -12, 10, 0],
     bufferInfo: cubeBufferInfo,
     vao: cubeVAO
   }
@@ -1399,7 +1403,14 @@ function drawScene(time) {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
   if ((oldTime | 0) < (time | 0)) {
-    uniformes.u_faceIndex[randInt(6)] = randInt(texturas.length);
+    uniformes.u_faceIndex[0]=2;
+    uniformes.u_faceIndex[1]=2;
+    uniformes.u_faceIndex[2]=2;
+    uniformes.u_faceIndex[3]=2;
+    uniformes.u_faceIndex[4]=2;
+    uniformes.u_faceIndex[5]=2;
+    uniformes.u_faceIndex[6]=2;
+    //uniformes.u_faceIndex[randInt(6)] = randInt(texturas.length);
   }
   oldTime = time;
 
@@ -1466,13 +1477,50 @@ function drawScene(time) {
 
   var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
 
+  var modifier = 0.5;
+
+
+  document.addEventListener('keypress', (event) => {
+    var keyName = event.key;
+    if(keyName=='k'){
+      console.log('a'),
+      nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
+      keyName=null;
+    }
+    else{
+      console.log('b'),
+      nodeInfosByName['cubo1'].trs.translation[0] += modifier;
+      keyName=null;
+    }
+    //alert('keydown event\n\n' + 'key: ' + keyName);
+  });
+
+/*
+  const bodyElement = document.querySelector("body");
+  bodyElement.addEventListener("keydown", gameAction);
+  function gameAction(){
+    const key=event.key;
+    switch (key) {
+      case 'k': 
+      nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
+      break;
+      case 'ç':
+        nodeInfosByName['cubo1'].trs.translation[0] += modifier;
+        break;
+    }
+  }
+  */
 
   if (nodeInfosByName[`shot`] != null) {
-    nodeInfosByName[`shot`].trs.translation[1] += deltaTime * speed * 1.9;
+    nodeInfosByName[`shot`].trs.translation[1] += deltaTime * speed * 5;
     nodeInfosByName[`shot`].trs.rotation[1] += deltaTime * speed * 1.3;
     nodeInfosByName[`shot`].trs.rotation[2] -= deltaTime * speed * 0.5;
-    //console.log(nodeInfosByName[`shot${i}`].trs.translation[1]);
 
+    //Fazer a luz acompanhar o tiro
+      arrayLuz[0].position.x=nodeInfosByName[`shot`].trs.translation[0];
+      arrayLuz[0].position.y=nodeInfosByName[`shot`].trs.translation[1]+1;
+      arrayLuz[0].position.z=nodeInfosByName[`shot`].trs.translation[2];
+    //console.log(nodeInfosByName[`shot${i}`].trs.translation[1]);
 
     for (ii = 1; ii <= countEnemy; ii++) {
 
@@ -1481,23 +1529,22 @@ function drawScene(time) {
         && (checkColision2(nodeInfosByName[`inimigo${ii}`].trs.translation, nodeInfosByName[`shot`].trs.translation))) {
         nodeInfosByName[`inimigo${ii}`].trs.translation[1] = 990;
         nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName[`cubo1`].trs.translation[1];
-
-        //hitCounter++;
-        //enemyHitSound.play();
-        //enemyFallSound.play();
-        //if(hitCounter>=enemyCounter){
-        //  gameOver=1;
-        //}
-        break;
+        hitCounter++;
+        if (hitCounter >= countEnemy) {
+          alert("Todos os inimigos abatidos!\n");
+          break;
+        }
       }
     }
     if ((nodeInfosByName[`shot`] != null)
       && (nodeInfosByName[`fim`] != null)
-      && (checkColision2(nodeInfosByName[`fim`].trs.translation, nodeInfosByName[`shot`].trs.translation))) {
+      && (nodeInfosByName[`shot`].trs.translation[1] > 14)) {
       nodeInfosByName[`shot`].trs.translation[0] = nodeInfosByName['cubo1'].trs.translation[0];
       nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName['cubo1'].trs.translation[1];
       nodeInfosByName[`shot`].trs.translation[2] = nodeInfosByName['cubo1'].trs.translation[2];
     }
+
+    //checkColision2(nodeInfosByName[`fim`].trs.translation, nodeInfosByName[`shot`].trs.translation)
     //nodeInfosByName[`cubo1`].trs.translation[1];
     /*
     if((nodeInfosByName[`shot${i}`]!=null)&&(nodeInfosByName[`shot${i}`].trs.translation[1] > 45)){
