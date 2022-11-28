@@ -402,16 +402,38 @@ var qtd_triangulos = 0;
 var config = {
   rotate: 0,
   x: 0,
-  y: 0,
+  y: -5,
   z: 0,
   spin_x: 0,
   spin_y: 0,
-  camera_x: 4,
-  camera_y: 3.5,
-  camera_z: 10,
+  camera_x: 0,
+  camera_y: 0,
+  camera_z: 25,
 
   addCaixa: function () {
     addCaixa();
+    gui.destroy();
+    loadGUI(gl);
+  },
+  addPlayer: function () {
+    addPlayer();
+    gui.destroy();
+    loadGUI(gl);
+  },
+  addInimigo: function () {
+    addInimigo();
+    gui.destroy();
+    loadGUI(gl);
+  },
+
+  addFim: function () {
+    addFim();
+    gui.destroy();
+    loadGUI(gl);
+  },
+
+  addShot: function () {
+    addShot();
     gui.destroy();
     loadGUI(gl);
   },
@@ -479,7 +501,7 @@ var config = {
   scalex: 1.0,
   scaley: 1.0,
   scalez: 1.0,
-  target: 3.5,
+  target: 0,
   vx: 0,
   vy: 0,
   vz: 0,
@@ -494,6 +516,21 @@ var config = {
   camera_2: false,
   camera_3: false,
 };
+
+const checkColision2 = (obj, shot) => {
+
+  if (
+    (shot[0] < obj[0] + 2)
+    && (shot[0] + 0.5 > obj[0])
+    && (shot[1] < obj[1] + 2)
+    && (1 + shot[1] > obj[1])
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+
+}
 
 const moveVertice = function () {
   var n = config.vertice;
@@ -743,6 +780,100 @@ function addPyramid() {
   outMemory();
 }
 
+function addPlayer() {
+  inMemory();
+  numberOfObjects++;
+  countC++;
+  var novoObjeto = {
+    name: `cubo${countC}`,
+    translation: [0, 0, 0],
+    textura: 'naveCim.jpg',
+    bufferInfo: cubeBufferInfo,
+    vao: cubeVAO
+  }
+  console.log(numberOfObjects);
+  console.log(novoObjeto.name);
+  listaObjetos.push(novoObjeto.name);
+  objeto.children.push(novoObjeto);
+
+  objectsToDraw = [];
+  objects = [];
+  nodeInfosByName = {};
+  scene = makeNode(objeto);
+  addInMemoryObject();
+  outMemory();
+}
+
+function addShot() {
+  inMemory();
+  numberOfObjects++;
+  //countC++;
+  //var shotCounter=1;
+  var novoObjeto = {
+    name: `shot`,
+    translation: [0, -5, 0],
+    bufferInfo: shotBufferInfo,
+    vao: shotVAO
+  }
+  console.log(numberOfObjects);
+  console.log(novoObjeto.name);
+  listaObjetos.push(novoObjeto.name);
+  objeto.children.push(novoObjeto);
+
+
+  objectsToDraw = [];
+  objects = [];
+  nodeInfosByName = {};
+  scene = makeNode(objeto);
+  addInMemoryObject();
+  outMemory();
+}
+
+function addFim() {
+  inMemory();
+  numberOfObjects++;
+  var novoObjeto = {
+    name: `fim`,
+    translation: [0, 14.5, 0],
+    bufferInfo: triangleBufferInfo,
+    vao: triangleVAO
+  }
+  console.log(novoObjeto);
+  listaObjetos.push(novoObjeto.name);
+  objeto.children.push(novoObjeto);
+
+  objectsToDraw = [];
+  objects = [];
+  nodeInfosByName = {};
+  scene = makeNode(objeto);
+  addInMemoryObject();
+  outMemory();
+}
+
+function addInimigo() {
+  inMemory();
+  numberOfObjects++;
+  //countC++;
+  countEnemy++;
+  var novoObjeto = {
+    name: `inimigo${countEnemy}`,
+    translation: [countEnemy * 2 + -10, 10, 0],
+    bufferInfo: cubeBufferInfo,
+    vao: cubeVAO
+  }
+
+  console.log(novoObjeto.name);
+  listaObjetos.push(novoObjeto.name);
+  objeto.children.push(novoObjeto);
+
+  objectsToDraw = [];
+  objects = [];
+  nodeInfosByName = {};
+  scene = makeNode(objeto);
+  addInMemoryObject();
+  outMemory();
+}
+
 function addCaixa() {
   inMemory();
   numberOfObjects++;
@@ -943,15 +1074,18 @@ var exist;
 var numberOfObjects;
 var uniformes;
 let oldTime = 0;
+var then;
 var texturas;
 var cubeVAO;
 var triangleVAO;
 var pyramidVAO;
+var shotVAO;
 var imagem;
 var tex;
 var cubeBufferInfo;
 var triangleBufferInfo;
 var pyramidBufferInfo;
+var shotBufferInfo;
 var listaObjetos = [];
 var objectsToDraw = [];
 var objects = [];
@@ -959,10 +1093,13 @@ var nodeInfosByName = {};
 var scene;
 var objeto = {};
 var countC = 0;
+var countEnemy = 0;
+var ii;
 var programInfo;
 var arrays_cube;
 var arrays_triangle;
 var arrays_pyramid;
+var arrays_shot;
 var gl;
 var aspect;
 var projectionMatrix;
@@ -992,14 +1129,16 @@ function main() {
     return;
   }
 
-
+  then = 0;
   // Tell the twgl to match position with a_position, n
   // normal with a_normal etc..
   twgl.setAttributePrefix("a_");
   //cubeBufferInfo = flattenedPrimitives.createCubeBufferInfo(gl, 1);
   arrays_triangle = {
     position: new Float32Array([
-      -1, 0, 0, 1, 0, 0, 0, 1, 0
+      -10, 0, 0,
+      10, 0, 0,
+      0, 5, 0
     ]),
     indices: new Uint16Array([
       0, 1, 2
@@ -1034,6 +1173,48 @@ function main() {
 
       3, 4, 2,
     ]),
+  }
+
+
+
+  arrays_shot = {
+    position: new Float32Array([
+      0.25, -0.25, 0.25, 0.25, 0.25, 0.25, -0.25, 0.25, 0.25,
+      0.25, -0.25, 0.25, -0.25, 0.25, 0.25, -0.25, -0.25, 0.25,
+
+      -0.25, -0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, -0.25,
+      -0.25, -0.25, 0.25, -0.25, 0.25, -0.25, -0.25, -0.25, -0.25,
+
+      -0.25, -0.25, -0.25, -0.25, 0.25, -0.25, 0.25, 0.25, -0.25,
+      -0.25, -0.25, -0.25, 0.25, 0.25, -0.25, 0.25, -0.25, -0.25,
+
+      0.25, -0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25,
+      0.25, -0.25, -0.25, 0.25, 0.25, 0.25, 0.25, -0.25, 0.25,
+
+
+
+      0.25, 0.25, 0.25, 0.25, 0.25, -0.25, -0.25, 0.25, -0.25,
+      0.25, 0.25, 0.25, -0.25, 0.25, -0.25, -0.25, 0.25, 0.25,
+
+      0.25, -0.25, -0.25, 0.25, -0.25, 0.25, -0.25, -0.25, 0.25,
+      0.25, -0.25, -0.25, -0.25, -0.25, 0.25, -0.25, -0.25, -0.25
+    ]),
+
+    indices: new Uint16Array([
+      0, 1, 2,
+      3, 4, 5,
+      6, 7, 8,
+      9, 10, 11,
+      12, 13, 14,
+      15, 16, 17,
+      18, 19, 20,
+      21, 22, 23,
+      24, 25, 26, 27,
+      28, 29, 30, 31,
+      32, 33, 34, 35
+    ]),
+    texcoord: [1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1],
+
   }
 
   arrays_cube = {
@@ -1093,6 +1274,7 @@ function main() {
   triangleBufferInfo = twgl.createBufferInfoFromArrays(gl, arrays_triangle);
   cubeBufferInfo = twgl.createBufferInfoFromArrays(gl, arrays_cube);
   pyramidBufferInfo = twgl.createBufferInfoFromArrays(gl, arrays_pyramid);
+  shotBufferInfo = twgl.createBufferInfoFromArrays(gl, arrays_shot);
   // setup GLSL program
 
   programInfo = twgl.createProgramInfo(gl, [vs_texture, fs_texture]);
@@ -1100,8 +1282,9 @@ function main() {
   cubeVAO = twgl.createVAOFromBufferInfo(gl, programInfo, cubeBufferInfo);
   triangleVAO = twgl.createVAOFromBufferInfo(gl, programInfo, triangleBufferInfo);
   pyramidVAO = twgl.createVAOFromBufferInfo(gl, programInfo, pyramidBufferInfo);
+  shotVAO = twgl.createVAOFromBufferInfo(gl, programInfo, shotBufferInfo);
 
-  texturas = ["pedra.jpeg", "pedra_obito.jpeg"]
+  texturas = ["pedra.jpeg", "pedra_obito.jpeg", "naveCima.jpg"]
 
   tex = twgl.createTexture(gl, {
     target: gl.TEXTURE_2D_ARRAY,
@@ -1190,9 +1373,18 @@ function main() {
     ];
   });
   cameraPosition = [config.camera_x, config.camera_y, config.camera_z];
-  addCaixa();
+  addPlayer();
+  addFim();
+  var cont;
+  for (cont = 0; cont < 9; cont++) {
+    addInimigo();
+  }
+  addShot();
+  console.log(numberOfObjects);
+  //addCaixa();
   loadGUI(gl);
-
+  console.log(isNaN(numberOfObjects));
+  console.log("Numero de objetos:", numberOfObjects);
   requestAnimationFrame(drawScene);
 
   // Draw the scene.
@@ -1217,6 +1409,13 @@ function drawScene(time) {
   // Compute the projection matrix
   var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, 1, 200);
+
+  var deltaTime = time - then;
+  then = time;
+  var adjustSide;
+  var adjustTop;
+  var speed = 1.8;
+  var c = time * speed;
 
   // Compute the camera's matrix using look at.
   //cameraPosition = [config.camera_x, config.camera_y, config.camera_z];
@@ -1266,6 +1465,47 @@ function drawScene(time) {
   var viewMatrix = m4.inverse(cameraMatrix);
 
   var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
+
+  if (nodeInfosByName[`shot`] != null) {
+    nodeInfosByName[`shot`].trs.translation[1] += deltaTime * speed * 1.9;
+    nodeInfosByName[`shot`].trs.rotation[1] += deltaTime * speed * 1.3;
+    nodeInfosByName[`shot`].trs.rotation[2] -= deltaTime * speed * 0.5;
+    //console.log(nodeInfosByName[`shot${i}`].trs.translation[1]);
+
+
+    for (ii = 1; ii <= countEnemy; ii++) {
+
+      if ((nodeInfosByName[`shot`] != null)
+        && (nodeInfosByName[`inimigo${ii}`] != null)
+        && (checkColision2(nodeInfosByName[`inimigo${ii}`].trs.translation, nodeInfosByName[`shot`].trs.translation))) {
+        nodeInfosByName[`inimigo${ii}`].trs.translation[1] = 990;
+        nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName[`cubo1`].trs.translation[1];
+
+        //hitCounter++;
+        //enemyHitSound.play();
+        //enemyFallSound.play();
+        //if(hitCounter>=enemyCounter){
+        //  gameOver=1;
+        //}
+        break;
+      }
+    }
+    if ((nodeInfosByName[`shot`] != null)
+      && (nodeInfosByName[`fim`] != null)
+      && (checkColision2(nodeInfosByName[`fim`].trs.translation, nodeInfosByName[`shot`].trs.translation))) {
+      nodeInfosByName[`shot`].trs.translation[0] = nodeInfosByName['cubo1'].trs.translation[0];
+      nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName['cubo1'].trs.translation[1];
+      nodeInfosByName[`shot`].trs.translation[2] = nodeInfosByName['cubo1'].trs.translation[2];
+    }
+    //nodeInfosByName[`cubo1`].trs.translation[1];
+    /*
+    if((nodeInfosByName[`shot${i}`]!=null)&&(nodeInfosByName[`shot${i}`].trs.translation[1] > 45)){
+      delete(nodeInfosByName[`shot${i}`]);
+      delete(objectsToDraw[i+numberOfObjects+1]);
+    }*/
+  }
+
 
   adjust;
   speed = 3;
