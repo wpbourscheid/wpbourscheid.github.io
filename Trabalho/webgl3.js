@@ -1149,7 +1149,7 @@ function main() {
   if (!gl) {
     return;
   }
-  alert("Para movimentar o persongem, use o menu->Manipular Matrizes->x!\n");
+  
   then = 0;
   // Tell the twgl to match position with a_position, n
   // normal with a_normal etc..
@@ -1411,7 +1411,7 @@ function main() {
   console.log(isNaN(numberOfObjects));
   console.log("Numero de objetos:", numberOfObjects);
   requestAnimationFrame(drawScene);
-
+  alert("Para movimentar o persongem, use o menu->Manipular Matrizes->x!\n");
   // Draw the scene.
 }
 function drawScene(time) {
