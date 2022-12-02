@@ -1099,6 +1099,8 @@ var objeto = {};
 var countC = 0;
 var countEnemy = 0;
 var ii;
+var parimpar;
+var deslocamento;
 var programInfo;
 var arrays_cube;
 var arrays_triangle;
@@ -1123,6 +1125,21 @@ var cameraPosition;
 var target;
 var up;
 
+var expSound = new Audio("explo.mp3");
+expSound.muted=false;
+expSound.volume=0.33;
+
+var shotSound = new Audio("piupiu.mp3");
+shotSound.muted=false;
+shotSound.volume=0.35;
+
+var perdeuSound = new Audio("quebost.mp3");
+perdeuSound.muted=false;
+perdeuSound.volume=0.35;
+
+var gnhouSound = new Audio("gnhou.mp3");
+gnhouSound.muted=false;
+gnhouSound.volume=0.35;
 
 function main() {
   // Get A WebGL context
@@ -1138,6 +1155,10 @@ function main() {
   // normal with a_normal etc..
   twgl.setAttributePrefix("a_");
   //cubeBufferInfo = flattenedPrimitives.createCubeBufferInfo(gl, 1);
+
+
+
+
   arrays_triangle = {
     position: new Float32Array([
       -10, 0, 0,
@@ -1428,6 +1449,10 @@ function drawScene(time) {
   var speed = 1.8;
   var c = time * speed;
 
+  adjustSide = Math.sin(c);
+    adjustTop = Math.cos(c);
+    //tempoAcumulado+=deltaTime;
+
   // Compute the camera's matrix using look at.
   //cameraPosition = [config.camera_x, config.camera_y, config.camera_z];
   if (!config.camera_1 && !config.camera_2 && !config.camera_3) {
@@ -1479,21 +1504,36 @@ function drawScene(time) {
 
   var modifier = 0.5;
 
+  const bodyElement = document.querySelector("body");
 
-  document.addEventListener('keypress', (event) => {
-    var keyName = event.key;
-    if(keyName=='k'){
-      console.log('a'),
-      nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
-      keyName=null;
-    }
-    else{
-      console.log('b'),
-      nodeInfosByName['cubo1'].trs.translation[0] += modifier;
-      keyName=null;
-    }
+    
+  //var fRotationRadians = degToRad(uiObj.rotation.y);
+  bodyElement.addEventListener("keydown", gameAction , false );
+  //bodyElement.addEventListener("keypress", cFunction , false );
+
+  function gameAction(event){
+
+   // gameStart=1;
+    switch(event.key){
+        case 'a': nodeInfosByName['cubo1'].trs.translation[0]-=modifier;
+        break;
+        case 'A': nodeInfosByName['cubo1'].trs.translation[0]-=modifier;
+        break;
+        case '4': nodeInfosByName['cubo1'].trs.translation[0]-=modifier;
+        break;
+        case 'd': nodeInfosByName['cubo1'].trs.translation[0]+=modifier;
+        break;
+        case 'D': nodeInfosByName['cubo1'].trs.translation[0]+=modifier;
+        break;
+        case '6': nodeInfosByName['cubo1'].trs.translation[0]+=modifier;
+        break;      
+        case 'c': config.camera_3=true;
+        break;
+        }   
+  }
+
     //alert('keydown event\n\n' + 'key: ' + keyName);
-  });
+  //});
 
 /*
   const bodyElement = document.querySelector("body");
@@ -1512,7 +1552,7 @@ function drawScene(time) {
   */
 
   if (nodeInfosByName[`shot`] != null) {
-    nodeInfosByName[`shot`].trs.translation[1] += deltaTime * speed * 5;
+    nodeInfosByName[`shot`].trs.translation[1] += deltaTime * speed * 4.9;
     nodeInfosByName[`shot`].trs.rotation[1] += deltaTime * speed * 1.3;
     nodeInfosByName[`shot`].trs.rotation[2] -= deltaTime * speed * 0.5;
 
@@ -1522,6 +1562,7 @@ function drawScene(time) {
       arrayLuz[0].position.z=nodeInfosByName[`shot`].trs.translation[2];
     //console.log(nodeInfosByName[`shot${i}`].trs.translation[1]);
 
+    //se tiro acerta
     for (ii = 1; ii <= countEnemy; ii++) {
 
       if ((nodeInfosByName[`shot`] != null)
@@ -1529,28 +1570,41 @@ function drawScene(time) {
         && (checkColision2(nodeInfosByName[`inimigo${ii}`].trs.translation, nodeInfosByName[`shot`].trs.translation))) {
         nodeInfosByName[`inimigo${ii}`].trs.translation[1] = 990;
         nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName[`cubo1`].trs.translation[1];
-        hitCounter++;
+        expSound.play();
+        shotSound.play();
+        hitCounter++;    
         if (hitCounter >= countEnemy) {
+          gnhouSound.play();
           alert("Todos os inimigos abatidos!\n");
+            config.camera_2 = true;
           break;
         }
       }
+      
     }
+    //tiro volta
     if ((nodeInfosByName[`shot`] != null)
       && (nodeInfosByName[`fim`] != null)
       && (nodeInfosByName[`shot`].trs.translation[1] > 14)) {
+      
       nodeInfosByName[`shot`].trs.translation[0] = nodeInfosByName['cubo1'].trs.translation[0];
+      shotSound.play();
       nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName['cubo1'].trs.translation[1];
       nodeInfosByName[`shot`].trs.translation[2] = nodeInfosByName['cubo1'].trs.translation[2];
+      
     }
 
-    //checkColision2(nodeInfosByName[`fim`].trs.translation, nodeInfosByName[`shot`].trs.translation)
-    //nodeInfosByName[`cubo1`].trs.translation[1];
-    /*
-    if((nodeInfosByName[`shot${i}`]!=null)&&(nodeInfosByName[`shot${i}`].trs.translation[1] > 45)){
-      delete(nodeInfosByName[`shot${i}`]);
-      delete(objectsToDraw[i+numberOfObjects+1]);
-    }*/
+    for(ii = 1; ii <= countEnemy; ii++){
+      nodeInfosByName[`inimigo${ii}`].trs.translation[0]+=adjustSide*0.1;
+      nodeInfosByName[`inimigo${ii}`].trs.translation[1]-=deltaTime*0.4
+
+      if(checkColision2(nodeInfosByName[`inimigo${ii}`].trs.translation, nodeInfosByName[`cubo1`].trs.translation) || nodeInfosByName[`inimigo${ii}`].trs.translation[1]<=-5){
+        perdeuSound.play();
+        alert("Perdeu!\n");
+        break;
+      }
+
+    }
   }
 
 
