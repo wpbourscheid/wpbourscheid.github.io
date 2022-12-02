@@ -521,7 +521,7 @@ const checkColision2 = (obj, shot) => {
 
   if (
     (shot[0] < obj[0] + 1.5)
-    && (shot[0] + 0.5 > obj[0]-1.5)
+    && (shot[0] + 0.5 > obj[0] - 1.5)
     && (shot[1] < obj[1] + 2)
     && (1 + shot[1] > obj[1])
   ) {
@@ -1126,20 +1126,20 @@ var target;
 var up;
 
 var expSound = new Audio("explo.mp3");
-expSound.muted=false;
-expSound.volume=0.33;
+expSound.muted = false;
+expSound.volume = 0.33;
 
 var shotSound = new Audio("piupiu.mp3");
-shotSound.muted=false;
-shotSound.volume=0.35;
+shotSound.muted = false;
+shotSound.volume = 0.35;
 
 var perdeuSound = new Audio("quebost.mp3");
-perdeuSound.muted=false;
-perdeuSound.volume=0.35;
+perdeuSound.muted = false;
+perdeuSound.volume = 0.35;
 
 var gnhouSound = new Audio("gnhou.mp3");
-gnhouSound.muted=false;
-gnhouSound.volume=0.35;
+gnhouSound.muted = false;
+gnhouSound.volume = 0.35;
 
 function main() {
   // Get A WebGL context
@@ -1149,7 +1149,7 @@ function main() {
   if (!gl) {
     return;
   }
-
+  alert("Para movimentar o persongem, use o menu->Manipular Matrizes->x!\n");
   then = 0;
   // Tell the twgl to match position with a_position, n
   // normal with a_normal etc..
@@ -1424,13 +1424,13 @@ function drawScene(time) {
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
   if ((oldTime | 0) < (time | 0)) {
-    uniformes.u_faceIndex[0]=2;
-    uniformes.u_faceIndex[1]=2;
-    uniformes.u_faceIndex[2]=2;
-    uniformes.u_faceIndex[3]=2;
-    uniformes.u_faceIndex[4]=2;
-    uniformes.u_faceIndex[5]=2;
-    uniformes.u_faceIndex[6]=2;
+    uniformes.u_faceIndex[0] = 2;
+    uniformes.u_faceIndex[1] = 2;
+    uniformes.u_faceIndex[2] = 2;
+    uniformes.u_faceIndex[3] = 2;
+    uniformes.u_faceIndex[4] = 2;
+    uniformes.u_faceIndex[5] = 2;
+    uniformes.u_faceIndex[6] = 2;
     //uniformes.u_faceIndex[randInt(6)] = randInt(texturas.length);
   }
   oldTime = time;
@@ -1450,8 +1450,8 @@ function drawScene(time) {
   var c = time * speed;
 
   adjustSide = Math.sin(c);
-    adjustTop = Math.cos(c);
-    //tempoAcumulado+=deltaTime;
+  adjustTop = Math.cos(c);
+  //tempoAcumulado+=deltaTime;
 
   // Compute the camera's matrix using look at.
   //cameraPosition = [config.camera_x, config.camera_y, config.camera_z];
@@ -1506,50 +1506,50 @@ function drawScene(time) {
 
   const bodyElement = document.querySelector("body");
 
-    
+
   //var fRotationRadians = degToRad(uiObj.rotation.y);
-  bodyElement.addEventListener("keydown", gameAction , false );
+  bodyElement.addEventListener("keydown", gameAction, false);
   //bodyElement.addEventListener("keypress", cFunction , false );
 
-  function gameAction(event){
+  function gameAction(event) {
 
-   // gameStart=1;
-    switch(event.key){
-        case 'a': nodeInfosByName['cubo1'].trs.translation[0]-=modifier;
+    // gameStart=1;
+    switch (event.key) {
+      case 'a': nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
         break;
-        case 'A': nodeInfosByName['cubo1'].trs.translation[0]-=modifier;
+      case 'A': nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
         break;
-        case '4': nodeInfosByName['cubo1'].trs.translation[0]-=modifier;
+      case '4': nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
         break;
-        case 'd': nodeInfosByName['cubo1'].trs.translation[0]+=modifier;
+      case 'd': nodeInfosByName['cubo1'].trs.translation[0] += modifier;
         break;
-        case 'D': nodeInfosByName['cubo1'].trs.translation[0]+=modifier;
+      case 'D': nodeInfosByName['cubo1'].trs.translation[0] += modifier;
         break;
-        case '6': nodeInfosByName['cubo1'].trs.translation[0]+=modifier;
-        break;      
-        case 'c': config.camera_3=true;
+      case '6': nodeInfosByName['cubo1'].trs.translation[0] += modifier;
         break;
-        }   
-  }
-
-    //alert('keydown event\n\n' + 'key: ' + keyName);
-  //});
-
-/*
-  const bodyElement = document.querySelector("body");
-  bodyElement.addEventListener("keydown", gameAction);
-  function gameAction(){
-    const key=event.key;
-    switch (key) {
-      case 'k': 
-      nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
-      break;
-      case 'ç':
-        nodeInfosByName['cubo1'].trs.translation[0] += modifier;
+      case 'c': config.camera_3 = true;
         break;
     }
   }
-  */
+
+  //alert('keydown event\n\n' + 'key: ' + keyName);
+  //});
+
+  /*
+    const bodyElement = document.querySelector("body");
+    bodyElement.addEventListener("keydown", gameAction);
+    function gameAction(){
+      const key=event.key;
+      switch (key) {
+        case 'k': 
+        nodeInfosByName['cubo1'].trs.translation[0] -= modifier;
+        break;
+        case 'ç':
+          nodeInfosByName['cubo1'].trs.translation[0] += modifier;
+          break;
+      }
+    }
+    */
 
   if (nodeInfosByName[`shot`] != null) {
     nodeInfosByName[`shot`].trs.translation[1] += deltaTime * speed * 4.9;
@@ -1557,9 +1557,9 @@ function drawScene(time) {
     nodeInfosByName[`shot`].trs.rotation[2] -= deltaTime * speed * 0.5;
 
     //Fazer a luz acompanhar o tiro
-      arrayLuz[0].position.x=nodeInfosByName[`shot`].trs.translation[0];
-      arrayLuz[0].position.y=nodeInfosByName[`shot`].trs.translation[1]+1;
-      arrayLuz[0].position.z=nodeInfosByName[`shot`].trs.translation[2];
+    arrayLuz[0].position.x = nodeInfosByName[`shot`].trs.translation[0];
+    arrayLuz[0].position.y = nodeInfosByName[`shot`].trs.translation[1] + 1;
+    arrayLuz[0].position.z = nodeInfosByName[`shot`].trs.translation[2];
     //console.log(nodeInfosByName[`shot${i}`].trs.translation[1]);
 
     //se tiro acerta
@@ -1572,33 +1572,33 @@ function drawScene(time) {
         nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName[`cubo1`].trs.translation[1];
         expSound.play();
         shotSound.play();
-        hitCounter++;    
+        hitCounter++;
         if (hitCounter >= countEnemy) {
           gnhouSound.play();
           alert("Todos os inimigos abatidos!\n");
-            config.camera_2 = true;
+          config.camera_2 = true;
           break;
         }
       }
-      
+
     }
     //tiro volta
     if ((nodeInfosByName[`shot`] != null)
       && (nodeInfosByName[`fim`] != null)
       && (nodeInfosByName[`shot`].trs.translation[1] > 14)) {
-      
+
       nodeInfosByName[`shot`].trs.translation[0] = nodeInfosByName['cubo1'].trs.translation[0];
       shotSound.play();
       nodeInfosByName[`shot`].trs.translation[1] = nodeInfosByName['cubo1'].trs.translation[1];
       nodeInfosByName[`shot`].trs.translation[2] = nodeInfosByName['cubo1'].trs.translation[2];
-      
+
     }
 
-    for(ii = 1; ii <= countEnemy; ii++){
-      nodeInfosByName[`inimigo${ii}`].trs.translation[0]+=adjustSide*0.1;
-      nodeInfosByName[`inimigo${ii}`].trs.translation[1]-=deltaTime*0.4
+    for (ii = 1; ii <= countEnemy; ii++) {
+      nodeInfosByName[`inimigo${ii}`].trs.translation[0] += adjustSide * 0.1;
+      nodeInfosByName[`inimigo${ii}`].trs.translation[1] -= deltaTime * 0.4
 
-      if(checkColision2(nodeInfosByName[`inimigo${ii}`].trs.translation, nodeInfosByName[`cubo1`].trs.translation) || nodeInfosByName[`inimigo${ii}`].trs.translation[1]<=-5){
+      if (checkColision2(nodeInfosByName[`inimigo${ii}`].trs.translation, nodeInfosByName[`cubo1`].trs.translation) || nodeInfosByName[`inimigo${ii}`].trs.translation[1] <= -5) {
         perdeuSound.play();
         alert("Perdeu!\n");
         break;
