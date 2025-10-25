@@ -1,0 +1,67 @@
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 90px);
+  background: transparent; // <<< Isso é o mais importante
+  text-align: center;
+  color: #f5e8ff;
+  padding: 2rem;
+  animation: fadeIn 1.2s ease-in-out;
+
+  .intro {
+    max-width: 800px;
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      color: #e6c7ff;
+      text-shadow: 0 0 10px rgba(165, 105, 189, 0.4);
+    }
+
+    h2 {
+      color: #b783f5;
+      margin-bottom: 1rem;
+      font-weight: 400;
+    }
+
+    p {
+      color: #d3b3f7;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      font-size: 1.1rem;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+
+      .btn {
+        background: #2f1752;
+        border: 1px solid #a569bd;
+        color: #f5e8ff;
+        padding: 0.8rem 1.6rem;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #a569bd;
+          color: #1b1028;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
