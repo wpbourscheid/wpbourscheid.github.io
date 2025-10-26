@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta http-equiv="refresh" content="0; url=/wpbourscheid.github.io/" />
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
     <script>
-      // Redireciona preservando o path original
-      const redirectTo = '/wpbourscheid.github.io/' + window.location.pathname.replace('/wpbourscheid.github.io/', '');
+      // Captura o caminho atual (ex: /home, /projetos, etc.)
+      const path = window.location.pathname
+        .replace(/^\/wpbourscheid\.github\.io/, '') // Remove o prefixo do repositório
+        .replace(/^\//, ''); // Remove barra inicial
+
+      // Monta a nova URL com hash routing para o Angular
+      const redirectTo = `/wpbourscheid.github.io/#/${path}`;
+
+      // Redireciona o navegador
       window.location.replace(redirectTo);
     </script>
   </head>
