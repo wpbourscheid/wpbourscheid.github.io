@@ -137,3 +137,33 @@ app-root {
     color: $text-light;
   }
 }
+.nav-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(245, 232, 255, 0.12);
+  color: #f5e8ff;
+  border: 1px solid rgba(245, 232, 255, 0.18);
+  padding: 0.35rem 0.5rem; /* menor padding */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  opacity: 0.1; /* mais discreto */
+  z-index: 1000;
+  font-size: 1.1rem; /* menor texto */
+  line-height: 1;
+
+  &:hover {
+    opacity: 0.9;
+    background: rgba(245, 232, 255, 0.25);
+    transform: translateY(-50%) scale(1.15);
+  }
+}
+
+.nav-arrow.left {
+  left: 0.8rem; /* mais próximo da borda */
+}
+
+.nav-arrow.right {
+  right: 0.8rem;
+}
