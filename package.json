@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "ng build --output-path docs --base-href / && mv docs/browser/* docs/ && rm -r docs/browser/ && git add docs -f && git commit -m '🚀 Deploy automático ' && git push"
+    "buid and clean": "ng build --output-path docs --base-href / && mv docs/browser/* docs/ && rm -r docs/browser/",
+    "deploy": "git add docs -f && git commit -m 'Deploy Automatico' && git push"
   },
   "prettier": {
     "printWidth": 100,
