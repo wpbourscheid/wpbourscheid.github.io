@@ -1,22 +1,22 @@
 .section-container {
-  padding: 4rem;
+  padding: 1rem 3rem;
   color: #f5e8ff;
   background: linear-gradient(145deg, #1a0029, #32005c);
   min-height: calc(100vh - 90px);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start; // Changed from center to flex-start
+  text-align: left; // Changed from center to left
 
   h1 {
     color: #e6c7ff;
     text-shadow: 0 0 10px rgba(165, 105, 189, 0.5);
     margin-bottom: 2rem;
     font-size: 2.5rem;
+    width: 100%; // Added to ensure proper alignment
   }
 
-  p,
-  li {
+  p, li {
     color: #d3b3f7;
     line-height: 1.6;
     font-size: 1.1rem;
