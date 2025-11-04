@@ -19,6 +19,7 @@ Este projeto apresenta um resumo da minha trajetória, principais projetos, habi
 
 ## 🧱 Estrutura do Projeto
 
+```bash
 📦 src/
 ┣ 📂 app/
 ┃ ┣ 📂 pages/
@@ -32,7 +33,7 @@ Este projeto apresenta um resumo da minha trajetória, principais projetos, habi
 ┃ ┣ app.routes.ts
 ┃ ┗ app.config.ts
 ┗ main.ts
-
+```
 
 Cada página é um componente Angular independente, com seu próprio arquivo `.html`, `.scss` e `.ts`.  
 Os estilos seguem um padrão visual escuro, com gradientes em tons de roxo e lilás.
